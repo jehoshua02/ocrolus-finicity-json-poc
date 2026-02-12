@@ -44,9 +44,8 @@ ocrolus-finicity-json-poc/
 
 ### Part 2: Transform Data for Ocrolus
 7. Transform Finicity JSON to add missing fields that may be required by Ocrolus
-   - Add default values for missing customer fields (firstName, lastName, email, phone, etc.)
-   - Add missing account fields (oldestTransactionDate, realAccountNumberLast4, detail object)
-   - Transformation can be toggled on/off per data type via environment variables
+   - Add default values for missing customer fields (firstName, lastName)
+   - Customer field transformations can be toggled on/off via environment variables
 8. Save transformed JSON to `output/transformed/`
 
 ### Part 3: Upload to Ocrolus
@@ -89,12 +88,10 @@ OCROLUS_BOOK_PK="book-pk-to-upload-to"
 Optional configuration (with defaults):
 
 ```bash
-# Transformation toggles (default: false)
-# Set to "true" to enable transformations for specific data types
-TRANSFORM_CUSTOMERS="false"
-TRANSFORM_ACCOUNTS="false"
-TRANSFORM_TRANSACTIONS="false"
-TRANSFORM_INSTITUTIONS="false"
+# Customer transformation toggles (default: true)
+# Set to "false" to disable specific customer field transformations
+TRANSFORM_CUSTOMER_FIRSTNAME="true"
+TRANSFORM_CUSTOMER_LASTNAME="true"
 ```
 
 ## Usage
@@ -128,12 +125,10 @@ This will:
 
 ### Transform Script: `transform-for-ocrolus.sh`
 1. Reads original Finicity JSON from `output/original/`
-2. Transforms data by adding missing fields that may be required by Ocrolus:
-   - **Customers**: Adds default values for firstName, lastName, email, phone, applicationId
-   - **Accounts**: Adds oldestTransactionDate, realAccountNumberLast4, detail object
-   - **Transactions**: Currently no transformations (copies as-is)
-   - **Institutions**: Removes offerBusinessAccounts and offerPersonalAccounts fields
-3. Each transformation can be toggled on/off via environment variables
+2. Transforms customer data by adding missing fields that may be required by Ocrolus:
+   - **Customers**: Adds default values for firstName, lastName (if missing or empty)
+   - **Accounts, Transactions, Institutions**: Copied as-is without transformations
+3. Each customer field transformation can be toggled on/off via individual environment variables
 4. Saves transformed JSON to `output/transformed/`
 
 ### Upload Orchestrator: `upload-all.sh`
@@ -335,32 +330,28 @@ The script will exit with an error if:
 
 ## Data Transformation
 
-If enabled, the POC includes a transformation step that adds missing fields to Finicity JSON data before uploading to Ocrolus. This ensures compatibility with Ocrolus's requirements while preserving the original Finicity data.
+If enabled, the POC includes a transformation step that adds missing fields to Finicity customer data before uploading to Ocrolus. This ensures compatibility with Ocrolus's requirements while preserving the original Finicity data.
 
 ### Why Transform?
 
-Ocrolus may require certain fields that Finicity doesn't always provide. The transformation step adds default/fake values for these missing fields to prevent upload failures.
+Ocrolus may require certain customer fields that Finicity doesn't always provide. The transformation step adds default/fake values for these missing fields to prevent upload failures.
 
 ### What Gets Transformed?
 
-- **Customers**: Adds firstName, lastName, email, phone, lastModifiedDate, applicationId if missing
-- **Accounts**: Adds oldestTransactionDate, realAccountNumberLast4, detail object if missing
-- **Transactions**: Currently no transformations (future-proofing)
-- **Institutions**: Currently no transformations (future-proofing)
+- **Customers**: Adds firstName, lastName if missing or empty
+- **Accounts, Transactions, Institutions**: Copied as-is without transformations
 
 ### Controlling Transformations
 
-You can toggle transformations on/off for each data type using environment variables:
+You can toggle each customer field transformation on/off using individual environment variables:
 
 ```bash
 # In your .env file
-TRANSFORM_CUSTOMERS="true"      # Set to "false" to disable customer transformations
-TRANSFORM_ACCOUNTS="true"       # Set to "false" to disable account transformations
-TRANSFORM_TRANSACTIONS="true"   # Set to "false" to disable transaction transformations
-TRANSFORM_INSTITUTIONS="true"   # Set to "false" to disable institution transformations
+TRANSFORM_CUSTOMER_FIRSTNAME="true"      # Set to "false" to skip firstName transformation
+TRANSFORM_CUSTOMER_LASTNAME="true"       # Set to "false" to skip lastName transformation
 ```
 
-When a transformation is disabled, the original Finicity data is copied as-is to the transformed directory.
+When a transformation is disabled for a specific field, that field is left as-is from the original Finicity data.
 
 ### Directory Structure
 
