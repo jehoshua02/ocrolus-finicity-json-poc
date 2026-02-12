@@ -36,7 +36,7 @@ validate_required_vars FINICITY_APP_KEY FINICITY_TOKEN FINICITY_CUSTOMER_ID || e
 
 # Fetch accounts data and keep the full response with {"accounts": [...]} wrapper
 log_info "Fetching all accounts for customer: $FINICITY_CUSTOMER_ID"
-curl -s -X GET "https://api.finicity.com/aggregation/v1/customers/$FINICITY_CUSTOMER_ID/accounts" \
+curl -s -X GET "https://api.finicity.com/aggregation/v1/customers/$FINICITY_CUSTOMER_ID/accounts/simple" \
     -H "Finicity-App-Key: $FINICITY_APP_KEY" \
     -H "Finicity-App-Token: $FINICITY_TOKEN" \
     -H "Accept: application/json" \
