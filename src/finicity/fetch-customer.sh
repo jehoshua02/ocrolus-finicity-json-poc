@@ -50,7 +50,7 @@ if ! echo "$CUSTOMER_RESPONSE" | jq empty 2>/dev/null; then
 fi
 
 # Save the customer data directly without wrapping (per Ocrolus requirements)
-# Set default firstName and lastName if not already set (required by Ocrolus)
+# Set default values for optional fields if not already set (may be required by Ocrolus)
 echo "$CUSTOMER_RESPONSE" | jq '
   if .firstName == null or .firstName == "" then
     .firstName = "Test"
@@ -59,6 +59,26 @@ echo "$CUSTOMER_RESPONSE" | jq '
   end |
   if .lastName == null or .lastName == "" then
     .lastName = "User"
+  else
+    .
+  end |
+  if .phone == null or .phone == "" then
+    .phone = "555-123-4567"
+  else
+    .
+  end |
+  if .email == null or .email == "" then
+    .email = "test.user@example.com"
+  else
+    .
+  end |
+  if .lastModifiedDate == null or .lastModifiedDate == "" then
+    .lastModifiedDate = (now | floor | tostring)
+  else
+    .
+  end |
+  if .applicationId == null or .applicationId == "" then
+    .applicationId = "test-application-id"
   else
     .
   end
