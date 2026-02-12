@@ -18,14 +18,12 @@ scripts/poc/finicity-json/
 │   │   ├── common.sh             # Logging, validation, utilities
 │   │   ├── finicity-auth.sh      # Finicity authentication
 │   │   └── ocrolus-auth.sh       # Ocrolus authentication
-│   ├── fetch/                    # Finicity data fetching scripts
+│   ├── finicity/                 # Finicity data fetching scripts
 │   │   ├── fetch-customer.sh     # Fetch customer data
 │   │   ├── fetch-accounts.sh     # Fetch accounts data
 │   │   ├── fetch-transactions.sh # Fetch transactions data
 │   │   └── fetch-institutions.sh # Fetch institutions data
-│   ├── process/                  # Data processing scripts
-│   │   └── add-daily-balances.sh # Add dailyBalances to transaction files
-│   └── upload/                   # Ocrolus upload scripts
+│   └── ocrolus/                  # Ocrolus upload scripts
 │       └── upload-to-ocrolus.sh  # Upload JSON bundle to Ocrolus
 └── output/                       # Generated output files
 ```
@@ -129,14 +127,14 @@ source scripts/poc/finicity-json/src/lib/finicity-auth.sh
 finicity_authenticate
 
 # Then fetch specific data
-./scripts/poc/finicity-json/src/fetch/fetch-customer.sh /tmp/customers.json
-./scripts/poc/finicity-json/src/fetch/fetch-accounts.sh /tmp/accounts.json
+./scripts/poc/finicity-json/src/finicity/fetch-customer.sh /tmp/customers.json
+./scripts/poc/finicity-json/src/finicity/fetch-accounts.sh /tmp/accounts.json
 
 # Fetch transactions (requires accounts.json to be fetched first)
-./scripts/poc/finicity-json/src/fetch/fetch-transactions.sh /tmp/transactions /tmp/accounts.json
+./scripts/poc/finicity-json/src/finicity/fetch-transactions.sh /tmp/transactions /tmp/accounts.json
 
 # Fetch institutions (saves each institution to its own file)
-./scripts/poc/finicity-json/src/fetch/fetch-institutions.sh /tmp/institutions 101732 102105
+./scripts/poc/finicity-json/src/finicity/fetch-institutions.sh /tmp/institutions 101732 102105
 ```
 
 #### Re-Upload Same Data to Different Book

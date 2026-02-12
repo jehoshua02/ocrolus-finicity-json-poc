@@ -65,11 +65,11 @@ finicity_authenticate || exit 1
 
 # Step 2: Fetch customer data
 log_info "Step 1/4: Fetching customer data..."
-"$PROJECT_DIR/src/fetch/fetch-customer.sh" "$OUTPUT_DIR/customers.json" || exit 1
+"$PROJECT_DIR/src/finicity/fetch-customer.sh" "$OUTPUT_DIR/customers.json" || exit 1
 
 # Step 3: Fetch accounts data
 log_info "Step 2/4: Fetching accounts data..."
-"$PROJECT_DIR/src/fetch/fetch-accounts.sh" "$OUTPUT_DIR/accounts.json" || exit 1
+"$PROJECT_DIR/src/finicity/fetch-accounts.sh" "$OUTPUT_DIR/accounts.json" || exit 1
 
 # Extract institution IDs from accounts for later use
 INSTITUTION_IDS=$(jq -r '.accounts[].institutionId // empty' "$OUTPUT_DIR/accounts.json" | sort -u)
@@ -78,17 +78,17 @@ INSTITUTION_IDS=$(jq -r '.accounts[].institutionId // empty' "$OUTPUT_DIR/accoun
 log_info "Step 3/4: Fetching transactions data..."
 TRANSACTIONS_DIR="$OUTPUT_DIR/transactions"
 mkdir -p "$TRANSACTIONS_DIR"
-"$PROJECT_DIR/src/fetch/fetch-transactions.sh" "$TRANSACTIONS_DIR" "$OUTPUT_DIR/accounts.json" || exit 1
+"$PROJECT_DIR/src/finicity/fetch-transactions.sh" "$TRANSACTIONS_DIR" "$OUTPUT_DIR/accounts.json" || exit 1
 
 # Step 5: Fetch institutions data
 log_info "Step 4/4: Fetching institutions data..."
 INSTITUTIONS_DIR="$OUTPUT_DIR/institutions"
 mkdir -p "$INSTITUTIONS_DIR"
 if [[ -n "$INSTITUTION_IDS" ]]; then
-    "$PROJECT_DIR/src/fetch/fetch-institutions.sh" "$INSTITUTIONS_DIR" $INSTITUTION_IDS || exit 1
+    "$PROJECT_DIR/src/finicity/fetch-institutions.sh" "$INSTITUTIONS_DIR" $INSTITUTION_IDS || exit 1
 else
     log_warn "No institution IDs found, creating empty institutions directory"
-    "$PROJECT_DIR/src/fetch/fetch-institutions.sh" "$INSTITUTIONS_DIR" || exit 1
+    "$PROJECT_DIR/src/finicity/fetch-institutions.sh" "$INSTITUTIONS_DIR" || exit 1
 fi
 
 log_info "✓ All Finicity data fetched successfully!"

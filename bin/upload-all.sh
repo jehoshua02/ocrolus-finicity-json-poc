@@ -82,7 +82,7 @@ ocrolus_authenticate || exit 1
 
 # Step 2: Upload to Ocrolus
 log_info "Step 2/2: Uploading Finicity JSON bundle to Ocrolus..."
-"$PROJECT_DIR/src/upload/upload-to-ocrolus.sh" \
+"$PROJECT_DIR/src/ocrolus/upload-to-ocrolus.sh" \
     "$CUSTOMERS_FILE" \
     "$ACCOUNTS_FILE" \
     "$TRANSACTIONS_DIR" \
