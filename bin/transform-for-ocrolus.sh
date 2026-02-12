@@ -190,16 +190,17 @@ fi
 log_info ""
 log_info "Step 4/4: Transforming institutions..."
 
-# Transform institution files - copy as-is for now (can add transformations later if needed)
+# Transform institution files - remove null offerBusinessAccounts and offerPersonalAccounts fields
 INSTITUTION_COUNT=0
 if [[ -d "$SOURCE_DIR/institutions" ]]; then
     for inst_file in "$SOURCE_DIR/institutions"/*.json; do
         if [[ -f "$inst_file" ]]; then
             filename=$(basename "$inst_file")
             if [[ "$TRANSFORM_INSTITUTIONS" == "true" ]]; then
-                # Currently no transformations for institutions, just copy
-                # Add transformation logic here if needed in the future
-                cp "$inst_file" "$TARGET_DIR/institutions/$filename"
+                # Remove offerBusinessAccounts and offerPersonalAccounts fields
+                jq 'del(.offerBusinessAccounts, .offerPersonalAccounts)' "$inst_file" > "$TARGET_DIR/institutions/$filename"
+
+                validate_json "$TARGET_DIR/institutions/$filename" || exit 1
             else
                 cp "$inst_file" "$TARGET_DIR/institutions/$filename"
             fi

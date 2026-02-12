@@ -132,7 +132,7 @@ This will:
    - **Customers**: Adds default values for firstName, lastName, email, phone, lastModifiedDate, applicationId
    - **Accounts**: Adds oldestTransactionDate, realAccountNumberLast4, detail object
    - **Transactions**: Currently no transformations (copies as-is)
-   - **Institutions**: Currently no transformations (copies as-is)
+   - **Institutions**: Removes offerBusinessAccounts and offerPersonalAccounts fields
 3. Each transformation can be toggled on/off via environment variables
 4. Saves transformed JSON to `output/transformed/`
 
