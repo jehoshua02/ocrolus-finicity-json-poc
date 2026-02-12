@@ -197,8 +197,8 @@ if [[ -d "$SOURCE_DIR/institutions" ]]; then
         if [[ -f "$inst_file" ]]; then
             filename=$(basename "$inst_file")
             if [[ "$TRANSFORM_INSTITUTIONS" == "true" ]]; then
-                # Remove offerBusinessAccounts and offerPersonalAccounts fields
-                jq 'del(.offerBusinessAccounts, .offerPersonalAccounts)' "$inst_file" > "$TARGET_DIR/institutions/$filename"
+                # Remove offerBusinessAccounts and offerPersonalAccounts fields from institution object
+                jq 'del(.institution.offerBusinessAccounts, .institution.offerPersonalAccounts)' "$inst_file" > "$TARGET_DIR/institutions/$filename"
 
                 validate_json "$TARGET_DIR/institutions/$filename" || exit 1
             else

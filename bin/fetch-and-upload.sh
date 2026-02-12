@@ -41,7 +41,12 @@ load_env_file
 # Set output directories
 export OUTPUT_DIR="$PROJECT_DIR/output/original"
 export TRANSFORMED_DIR="$PROJECT_DIR/output/transformed"
-mkdir -p "$OUTPUT_DIR"
+
+# Clean transformed directory if it exists (fetch-all.sh will clean OUTPUT_DIR)
+if [[ -d "$TRANSFORMED_DIR" ]]; then
+    log_info "Cleaning existing transformed output directory: $TRANSFORMED_DIR"
+    rm -rf "$TRANSFORMED_DIR"
+fi
 
 log_info "==================================================================="
 log_info "POC: Fetch Finicity JSON and Upload to Ocrolus"

@@ -46,7 +46,7 @@ validate_required_vars FINICITY_PARTNER_ID FINICITY_PARTNER_SECRET FINICITY_APP_
 # Set defaults for optional variables
 TXN_FROM_DATE="${TXN_FROM_DATE:-$(date -u -v-90d +%s 2>/dev/null || date -u -d '90 days ago' +%s)}"
 TXN_TO_DATE="${TXN_TO_DATE:-$(date -u +%s)}"
-OUTPUT_DIR="${OUTPUT_DIR:-$PROJECT_DIR/output}"
+OUTPUT_DIR="${OUTPUT_DIR:-$PROJECT_DIR/output/original}"
 
 # Export for use by fetch scripts
 export TXN_FROM_DATE
