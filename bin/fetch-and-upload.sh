@@ -60,6 +60,13 @@ log_info "-------------------------------------------------------------------"
 "$BIN_DIR/upload-all.sh" "$OUTPUT_DIR" || exit 1
 
 log_info ""
+log_info "PART 3: Checking for Upload Errors"
+log_info "-------------------------------------------------------------------"
+
+# Step 3: Check for errors in the uploaded book
+"$BIN_DIR/get-book-errors.sh" "$OCROLUS_BOOK_PK" || exit 1
+
+log_info ""
 log_info "==================================================================="
 log_info "✓ POC completed successfully!"
 log_info "==================================================================="
