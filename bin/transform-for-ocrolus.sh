@@ -175,7 +175,7 @@ if [[ -d "$SOURCE_DIR/transactions" ]]; then
             else
                 cp "$txn_file" "$TARGET_DIR/transactions/$filename"
             fi
-            ((TRANSACTION_COUNT++))
+            TRANSACTION_COUNT=$((TRANSACTION_COUNT + 1))
         fi
     done
     if [[ "$TRANSFORM_TRANSACTIONS" == "true" ]]; then
@@ -203,7 +203,7 @@ if [[ -d "$SOURCE_DIR/institutions" ]]; then
             else
                 cp "$inst_file" "$TARGET_DIR/institutions/$filename"
             fi
-            ((INSTITUTION_COUNT++))
+            INSTITUTION_COUNT=$((INSTITUTION_COUNT + 1))
         fi
     done
     if [[ "$TRANSFORM_INSTITUTIONS" == "true" ]]; then
