@@ -98,8 +98,7 @@ if [[ -f "$SOURCE_DIR/customers.json" ]]; then
             .applicationId = "test-application-id"
         else
             .
-        end |
-        del(.lastModifiedDate)
+        end
         ' "$SOURCE_DIR/customers.json" > "$TARGET_DIR/customers.json"
 
         validate_json "$TARGET_DIR/customers.json" || exit 1
