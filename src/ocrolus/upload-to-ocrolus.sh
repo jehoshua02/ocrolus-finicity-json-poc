@@ -120,7 +120,7 @@ log_info "  Transactions: $TOTAL_TRANSACTIONS transaction(s) across ${#TRANSACTI
 log_info "  Institutions: $TOTAL_INSTITUTIONS institution(s) across ${#INSTITUTION_FILES[@]} file(s)"
 
 # Create a simple document name with unix timestamp
-DOC_NAME="Finicity_$(date +%s).json"
+DOC_NAME="Finicity_$(date +%s)"
 
 log_info "Document name: $DOC_NAME"
 
