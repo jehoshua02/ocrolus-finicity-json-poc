@@ -94,16 +94,12 @@ if [[ -f "$SOURCE_DIR/customers.json" ]]; then
         else
             .
         end |
-        if .lastModifiedDate == null or .lastModifiedDate == "" then
-            .lastModifiedDate = (now | floor | tostring)
-        else
-            .
-        end |
         if .applicationId == null or .applicationId == "" then
             .applicationId = "test-application-id"
         else
             .
-        end
+        end |
+        del(.lastModifiedDate)
         ' "$SOURCE_DIR/customers.json" > "$TARGET_DIR/customers.json"
 
         validate_json "$TARGET_DIR/customers.json" || exit 1

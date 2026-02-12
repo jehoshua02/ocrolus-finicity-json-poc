@@ -129,7 +129,7 @@ This will:
 ### Transform Script: `transform-for-ocrolus.sh`
 1. Reads original Finicity JSON from `output/original/`
 2. Transforms data by adding missing fields that may be required by Ocrolus:
-   - **Customers**: Adds default values for firstName, lastName, email, phone, lastModifiedDate, applicationId
+   - **Customers**: Adds default values for firstName, lastName, email, phone, applicationId; removes lastModifiedDate
    - **Accounts**: Adds oldestTransactionDate, realAccountNumberLast4, detail object
    - **Transactions**: Currently no transformations (copies as-is)
    - **Institutions**: Removes offerBusinessAccounts and offerPersonalAccounts fields
