@@ -7,7 +7,7 @@ This proof-of-concept demonstrates fetching customer, account, transaction, and 
 The POC is built with a **modular architecture** for flexibility and reusability:
 
 ```
-scripts/poc/finicity-json/
+ocrolus-finicity-json-poc/
 ├── bin/                          # Entry point scripts
 │   ├── fetch-all.sh              # Orchestrator: fetch all Finicity data
 │   ├── transform-for-ocrolus.sh  # Transform: add missing fields for Ocrolus
@@ -68,103 +68,50 @@ scripts/poc/finicity-json/
 - `curl` command-line tool
 - `jq` JSON processor (install via `brew install jq` on macOS)
 
-## Required Environment Variables
+## Configuration
+
+Copy the example environment file and populate it with your credentials:
 
 ```bash
-export FINICITY_PARTNER_ID="your-partner-id"
-export FINICITY_PARTNER_SECRET="your-partner-secret"
-export FINICITY_APP_KEY="your-app-key"
-export FINICITY_CUSTOMER_ID="customer-id-to-fetch"
-export OCROLUS_CLIENT_ID="your-ocrolus-client-id"
-export OCROLUS_CLIENT_SECRET="your-ocrolus-client-secret"
-export OCROLUS_BOOK_PK="book-pk-to-upload-to"
+cp .env.example .env
 ```
 
-## Optional Environment Variables
+Then edit `.env` and fill in the required values:
 
 ```bash
-# Fetch only a specific account (default: all customer accounts)
-export FINICITY_ACCOUNT_ID="specific-account-id"
+FINICITY_PARTNER_ID="your-partner-id"
+FINICITY_PARTNER_SECRET="your-partner-secret"
+FINICITY_APP_KEY="your-app-key"
+FINICITY_CUSTOMER_ID="customer-id-to-fetch"
+OCROLUS_CLIENT_ID="your-ocrolus-client-id"
+OCROLUS_CLIENT_SECRET="your-ocrolus-client-secret"
+OCROLUS_BOOK_PK="book-pk-to-upload-to"
+```
 
-# Transaction date range (defaults to last 90 days)
-export TXN_FROM_DATE="1640995200"  # Unix timestamp
-export TXN_TO_DATE="1672531200"    # Unix timestamp
+Optional configuration (with defaults):
 
-# Transactions per page for pagination (default: 20, max: 1000)
-export TXN_LIMIT="20"
-
-# Transformation toggles (default: true)
-# Set to "false" to disable transformations for specific data types
-export TRANSFORM_CUSTOMERS="false"
-export TRANSFORM_ACCOUNTS="false"
-export TRANSFORM_TRANSACTIONS="false"
-export TRANSFORM_INSTITUTIONS="false"
+```bash
+# Transformation toggles (default: false)
+# Set to "true" to enable transformations for specific data types
+TRANSFORM_CUSTOMERS="false"
+TRANSFORM_ACCOUNTS="false"
+TRANSFORM_TRANSACTIONS="false"
+TRANSFORM_INSTITUTIONS="false"
 ```
 
 ## Usage
 
-All scripts automatically load environment variables from a `.env` file in the `scripts/poc/finicity-json/` directory.
-
-### Quick Start: Complete End-to-End Flow
+Run the complete end-to-end flow:
 
 ```bash
-# 1. Copy the example .env file
-cp scripts/poc/finicity-json/.env.example scripts/poc/finicity-json/.env
-
-# 2. Edit the .env file with your credentials
-vim scripts/poc/finicity-json/.env
-
-# 3. Run the complete flow (fetch + upload)
-./scripts/poc/finicity-json/bin/fetch-and-upload.sh
+./bin/fetch-and-upload.sh
 ```
 
-### Modular Usage Examples
-
-#### Fetch All Finicity Data (without uploading)
-
-```bash
-# Fetch all data and save to ./output directory
-./scripts/poc/finicity-json/bin/fetch-all.sh
-
-# Or specify a custom output directory
-OUTPUT_DIR=/tmp/finicity-data ./scripts/poc/finicity-json/bin/fetch-all.sh
-```
-
-#### Upload Pre-Fetched Data
-
-```bash
-# Upload from default ./output directory
-./scripts/poc/finicity-json/bin/upload-all.sh
-
-# Or upload from a custom directory
-./scripts/poc/finicity-json/bin/upload-all.sh /path/to/json/files
-```
-
-#### Fetch Individual Data Types
-
-```bash
-# First, authenticate with Finicity
-source scripts/poc/finicity-json/src/lib/common.sh
-source scripts/poc/finicity-json/src/lib/finicity-auth.sh
-finicity_authenticate
-
-# Then fetch specific data
-./scripts/poc/finicity-json/src/finicity/fetch-customer.sh /tmp/customers.json
-./scripts/poc/finicity-json/src/finicity/fetch-accounts.sh /tmp/accounts.json
-
-# Fetch transactions (requires accounts.json to be fetched first)
-./scripts/poc/finicity-json/src/finicity/fetch-transactions.sh /tmp/transactions /tmp/accounts.json
-
-# Fetch institutions (saves each institution to its own file)
-./scripts/poc/finicity-json/src/finicity/fetch-institutions.sh /tmp/institutions 101732 102105
-```
-
-#### Re-Upload Same Data to Different Book
-
-```bash
-# Upload previously fetched data to a different Ocrolus book
-OCROLUS_BOOK_PK=12345 ./scripts/poc/finicity-json/bin/upload-all.sh ./output
-```
+This will:
+1. Fetch all data from Finicity (customer, accounts, transactions, institutions)
+2. Transform the data (add missing fields if transformations are enabled)
+3. Upload to Ocrolus
+4. Check for upload errors and display results
 
 ## What the Scripts Do
 
@@ -246,8 +193,8 @@ This data comes directly from Finicity's API using the `showDailyBalance=true` q
 [INFO]
 [INFO] PART 1: Fetching Finicity Data
 [INFO] -------------------------------------------------------------------
-[INFO] Loading environment variables from .../scripts/poc/finicity-json/.env
-[INFO] Output directory: .../scripts/poc/finicity-json/output/original
+[INFO] Loading environment variables from .../.env
+[INFO] Output directory: .../output/original
 [INFO] Authenticating with Finicity...
 [INFO] ✓ Finicity authentication successful
 [INFO] Step 1/4: Fetching customer data...
@@ -399,7 +346,7 @@ The script will exit with an error if:
 
 ## Data Transformation
 
-The POC includes a transformation step that adds missing fields to Finicity JSON data before uploading to Ocrolus. This ensures compatibility with Ocrolus's requirements while preserving the original Finicity data.
+If enabled, the POC includes a transformation step that adds missing fields to Finicity JSON data before uploading to Ocrolus. This ensures compatibility with Ocrolus's requirements while preserving the original Finicity data.
 
 ### Why Transform?
 
