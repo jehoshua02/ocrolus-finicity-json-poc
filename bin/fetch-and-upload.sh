@@ -38,8 +38,9 @@ source "$PROJECT_DIR/src/lib/common.sh"
 # Load .env file
 load_env_file
 
-# Set output directory
-export OUTPUT_DIR="$PROJECT_DIR/output"
+# Set output directories
+export OUTPUT_DIR="$PROJECT_DIR/output/original"
+export TRANSFORMED_DIR="$PROJECT_DIR/output/transformed"
 mkdir -p "$OUTPUT_DIR"
 
 log_info "==================================================================="
@@ -53,22 +54,30 @@ log_info "-------------------------------------------------------------------"
 "$BIN_DIR/fetch-all.sh" || exit 1
 
 log_info ""
-log_info "PART 2: Uploading to Ocrolus"
+log_info "PART 2: Transforming Data for Ocrolus"
 log_info "-------------------------------------------------------------------"
 
-# Step 2: Upload to Ocrolus
-"$BIN_DIR/upload-all.sh" "$OUTPUT_DIR" || exit 1
+# Step 2: Transform the data (add missing fields with fake values)
+"$BIN_DIR/transform-for-ocrolus.sh" || exit 1
 
 log_info ""
-log_info "PART 3: Checking for Upload Errors"
+log_info "PART 3: Uploading to Ocrolus"
 log_info "-------------------------------------------------------------------"
 
-# Step 3: Check for errors in the uploaded book
+# Step 3: Upload transformed data to Ocrolus
+"$BIN_DIR/upload-all.sh" "$TRANSFORMED_DIR" || exit 1
+
+log_info ""
+log_info "PART 4: Checking for Upload Errors"
+log_info "-------------------------------------------------------------------"
+
+# Step 4: Check for errors in the uploaded book
 "$BIN_DIR/get-book-errors.sh" "$OCROLUS_BOOK_PK" || exit 1
 
 log_info ""
 log_info "==================================================================="
 log_info "✓ POC completed successfully!"
 log_info "==================================================================="
-log_info "Output saved to: $OUTPUT_DIR"
+log_info "Original Finicity data: $OUTPUT_DIR"
+log_info "Transformed data: $TRANSFORMED_DIR"
 
