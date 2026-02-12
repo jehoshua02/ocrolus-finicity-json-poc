@@ -7,6 +7,9 @@
 # Supports multiple transaction JSON files (one per page per account) and
 # multiple institution JSON files (one per institution).
 #
+# The script automatically generates a document name in the format:
+#   Finicity_{UNIX_TIMESTAMP}
+#
 # Required Environment Variables:
 #   OCROLUS_TOKEN             - Ocrolus OAuth2 access token
 #   OCROLUS_BOOK_PK           - Ocrolus Book PK to upload into
@@ -116,6 +119,11 @@ log_info "  Accounts: $(jq -c '.' "$ACCOUNTS_FILE" | head -c 100)..."
 log_info "  Transactions: $TOTAL_TRANSACTIONS transaction(s) across ${#TRANSACTION_FILES[@]} file(s)"
 log_info "  Institutions: $TOTAL_INSTITUTIONS institution(s) across ${#INSTITUTION_FILES[@]} file(s)"
 
+# Create a simple document name with unix timestamp
+DOC_NAME="Finicity_$(date +%s).json"
+
+log_info "Document name: $DOC_NAME"
+
 # Upload to Ocrolus
 log_info "Uploading Finicity JSON bundle to Ocrolus Book PK: $OCROLUS_BOOK_PK..."
 
@@ -125,6 +133,7 @@ CURL_CMD=(
     -H "Authorization: Bearer $OCROLUS_TOKEN"
     -H "Accept: application/json"
     -F "pk=$OCROLUS_BOOK_PK"
+    -F "doc_name=$DOC_NAME"
     -F "accounts=@$ACCOUNTS_FILE"
     -F "customers=@$CUSTOMERS_FILE"
 )
