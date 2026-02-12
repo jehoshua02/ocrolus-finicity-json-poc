@@ -106,27 +106,11 @@ REJECTED_COUNT=0
 
 # Display document information
 echo "$DOCUMENTS" | jq -c '.[]' | while read -r doc; do
-    DOC_PK=$(echo "$doc" | jq -r '.pk // "N/A"')
-    DOC_NAME=$(echo "$doc" | jq -r '.name // "N/A"')
-    DOC_UUID=$(echo "$doc" | jq -r '.uuid // "N/A"')
-    DOC_STATUS=$(echo "$doc" | jq -r '.status // "N/A"')
-    DOC_CLASS=$(echo "$doc" | jq -r '.document_class // "N/A"')
-    REJECTION_REASON=$(echo "$doc" | jq -r '.rejection_reason // empty')
-    REJECTION_DESC=$(echo "$doc" | jq -r '.rejection_reason_description // empty')
-
     echo ""
-    echo "Document PK: $DOC_PK"
-    echo "  UUID: $DOC_UUID"
-    echo "  Name: $DOC_NAME"
-    echo "  Status: $DOC_STATUS"
-    echo "  Class: $DOC_CLASS"
-
-    if [[ "$DOC_STATUS" == "REJECTED" || -n "$REJECTION_REASON" ]]; then
-        echo "  ⚠️  REJECTION REASON: $REJECTION_REASON"
-        if [[ -n "$REJECTION_DESC" ]]; then
-            echo "  📝 Description: $REJECTION_DESC"
-        fi
-    fi
+    echo "----------------------------------------"
+    echo "Document:"
+    echo "----------------------------------------"
+    echo "$doc" | jq '.'
 done
 
 echo ""
@@ -134,7 +118,7 @@ echo "=========================================="
 
 # Count errors for summary
 REJECTED_COUNT=$(echo "$DOCUMENTS" | jq '[.[] | select(.status == "REJECTED")] | length')
-VERIFIED_COUNT=$(echo "$DOCUMENTS" | jq '[.[] | select(.status == "VERIFIED")] | length')
+VERIFIED_COUNT=$(echo "$DOCUMENTS" | jq '[.[] | select(.status == "VERIFICATION_COMPLETE")] | length')
 
 echo "Summary:"
 echo "  Total Documents: $DOC_COUNT"
