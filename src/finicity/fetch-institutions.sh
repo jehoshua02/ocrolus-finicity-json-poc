@@ -68,11 +68,8 @@ for INSTITUTION_ID in "$@"; do
         continue
     fi
 
-    # Handle different response formats and wrap in {"institutions": [...]} format
-    # - {institution: {...}} -> extract .institution and wrap
-    # - {institutions: [...]} -> use as-is
-    # - {...} (bare object) -> wrap in institutions array
-    echo "$RESPONSE" | jq 'if .institution != null then {institutions: [.institution]} elif .institutions != null then . elif .id != null then {institutions: [.]} else {institutions: []} end' > "$OUTPUT_FILE"
+    # Write response to output file
+    echo "$RESPONSE" | jq '.' > "$OUTPUT_FILE"
 
     # Validate output file
     if ! validate_json "$OUTPUT_FILE"; then
