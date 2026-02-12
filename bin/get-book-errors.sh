@@ -9,8 +9,11 @@
 #   OCROLUS_CLIENT_ID         - Ocrolus OAuth2 client ID
 #   OCROLUS_CLIENT_SECRET     - Ocrolus OAuth2 client secret
 #
-# Required Arguments:
-#   $1 - Book PK (primary key) to check for errors
+# Optional Environment Variables:
+#   OCROLUS_BOOK_PK           - Default book PK to check (can be overridden by argument)
+#
+# Optional Arguments:
+#   $1 - Book PK (primary key) to check for errors (defaults to OCROLUS_BOOK_PK from env)
 #
 # Output:
 #   Displays book status and any document errors in a readable format
@@ -30,17 +33,20 @@ source "$PROJECT_DIR/src/lib/ocrolus-auth.sh"
 # Load .env file
 load_env_file
 
-# Validate arguments
-if [[ $# -lt 1 ]]; then
-    log_error "Usage: $0 <book_pk>"
-    log_error "Example: $0 127707317"
-    exit 1
-fi
-
-BOOK_PK="$1"
-
 # Validate required environment variables
 validate_required_vars OCROLUS_CLIENT_ID OCROLUS_CLIENT_SECRET || exit 1
+
+# Get Book PK from argument or environment variable
+if [[ $# -ge 1 ]]; then
+    BOOK_PK="$1"
+elif [[ -n "${OCROLUS_BOOK_PK:-}" ]]; then
+    BOOK_PK="$OCROLUS_BOOK_PK"
+else
+    log_error "Usage: $0 [book_pk]"
+    log_error "Example: $0 127707317"
+    log_error "Or set OCROLUS_BOOK_PK in your .env file"
+    exit 1
+fi
 
 log_info "Fetching book status for Book PK: $BOOK_PK"
 
