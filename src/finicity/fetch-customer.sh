@@ -50,7 +50,19 @@ if ! echo "$CUSTOMER_RESPONSE" | jq empty 2>/dev/null; then
 fi
 
 # Save the customer data directly without wrapping (per Ocrolus requirements)
-echo "$CUSTOMER_RESPONSE" | jq '.' > "$OUTPUT_FILE"
+# Set default firstName and lastName if not already set (required by Ocrolus)
+echo "$CUSTOMER_RESPONSE" | jq '
+  if .firstName == null or .firstName == "" then
+    .firstName = "Test"
+  else
+    .
+  end |
+  if .lastName == null or .lastName == "" then
+    .lastName = "User"
+  else
+    .
+  end
+' > "$OUTPUT_FILE"
 
 # Validate output file
 validate_json "$OUTPUT_FILE" || exit 1
