@@ -4,8 +4,6 @@ This proof-of-concept demonstrates fetching customer, account, transaction, and 
 
 ## Architecture
 
-The POC is built with a **modular architecture** for flexibility and reusability:
-
 ```
 ocrolus-finicity-json-poc/
 ├── bin/                          # Entry point scripts
@@ -334,15 +332,6 @@ The script will exit with an error if:
 - Any API request returns invalid JSON
 - Ocrolus authentication fails
 - Ocrolus upload fails (non-200 status)
-
-## Benefits of Modular Architecture
-
-- **Flexibility**: Fetch without uploading, or upload pre-fetched data
-- **Reusability**: Use individual scripts in other workflows
-- **Testability**: Test each component independently
-- **Maintainability**: Changes to one step don't affect others
-- **Debugging**: Easier to debug individual steps
-- **Composability**: Mix and match scripts for different use cases
 
 ## Data Transformation
 
